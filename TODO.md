@@ -2,43 +2,44 @@
 
 ## Needs a decision
 
-- **Table discovery.** `db.tables` is a hand-maintained list right now. dbt
-  appears to produce one `fhir_resource` table per schema (e.g.
-  `dev_include_access.fhir_resource`) -- if that pattern holds and more
-  schemas get added over time, it may be worth sweeping
-  `information_schema.tables` for everything matching `%.fhir_resource`
-  instead of maintaining the list by hand. Depends on how many resource
-  groups there end up being and whether all of them should always be
-  included.
-- **Dewrangle is still just a file writer.** `DewrangleJSON` (ported from
-  piper) writes a local JSON manifest "suitable for Dewrangle" -- it does not
-  call the Dewrangle API. Needs to be written for real: either extend this
-  consumer to POST to Dewrangle directly, or confirm the manifest file is
-  handed off to some other existing loader.
-- **IG validation isn't wired into the CLI yet.** `ValidateAgainstIG` was
-  ported and works the same as before (network call to a FHIR server's
-  `$validate`), but `extract.py`'s `run()` only uses `ValidateResourceBasic`
-  by default. Needs CLI flags (mirroring piper's old `--validate` /
-  `--max-validation-count`) once there's a target IG validation server to
-  point at.
-- **Credentials.** DB connection currently comes from `db.uri` in the config
-  or `SPIT_FHIR_DB_URI`; there's no secrets-manager integration. Fine for
-  local dev -- decide before this runs anywhere shared.
+- **IG validation server.** A local HAPI FHIR server with the NCPI IG loaded
+  will be stood up (on Eric's laptop for now) as the target for
+  `ValidateAgainstIG`. Not yet decided whether/how that can run in CI --
+  needs to bring up the server + load the IG (see the `justfile` stub) once
+  that's worked out. Until then, `--validate-ig`-style CLI wiring for it is
+  on hold.
+- **Credentials in production.** DB connection currently comes from `db.uri`
+  in the config or `SPIT_FHIR_DB_URI`. How this gets populated once the job
+  runs live is still unknown -- likely baked into the runtime environment,
+  but the shape of that isn't decided yet.
+- **`profile` column.** A `profile` column may be added to `fhir_resources`
+  later for more selective extraction. Not adding speculative filtering for
+  it now -- revisit once the column actually exists.
+
+## Resolved (was open, now settled)
+
+- ~~Table discovery~~ -- all resources live in one `fhir_resources` table,
+  uniquely keyed by `(id, resource_type)`. `extract.py` supports `--id` and
+  `--resource-type` filters (combined with AND), or no filter for "all".
+- ~~Dewrangle API~~ -- `DewrangleJSON` writing a local manifest file is the
+  intended final behavior for this repo; a separate existing script (not
+  part of this repo, may or may not get folded in later) loads that file
+  into Dewrangle.
 
 ## Known issue
 
-- The current `tests/data/dbt_fhir.json` fixture fails
-  `test_hl7_validation.py` as of 2026-07-27: `Consent.provision.purpose` is
-  typed as `Coding[]` in base FHIR R4B, but the dbt output wraps each entry
-  in an extra `{"coding": [...]}` envelope (as if it were a
-  `CodeableConcept[]`). That's a dbt-side transform bug, not a spit-fhir bug
-  -- worth fixing upstream in `fhir-kfi-dbt-model`, or the fixture will keep
-  failing this test as more resources are added.
+- `tests/data/dbt_fhir.json` fails `test_hl7_validation.py` as of
+  2026-07-27: `Consent.provision.purpose` is typed as `Coding[]` in base
+  FHIR R4B, but the dbt output wraps each entry in an extra
+  `{"coding": [...]}` envelope, as if it were `CodeableConcept[]`. That's a
+  dbt-side transform bug in `fhir-kfi-dbt-model`, not a spit-fhir bug.
 
 ## Smaller items
 
 - No CI workflow yet (`.github/workflows`) -- add one once there's enough
-  here to be worth gating on.
+  here to be worth gating on, and once the IG-validation-in-CI question
+  above is settled (basic FHIR validation + unit tests don't need it either
+  way).
 - No integration test against a real Postgres instance -- current tests only
   exercise the validation/scrub logic against the static fixture, not
   `stream_table`/`run_extract` against a live DB.

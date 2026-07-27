@@ -4,12 +4,8 @@ db:
   # instead of committing a connection string here.
   uri: postgresql+psycopg://user:pass@localhost:5432/warehouse
 
-  # Schema-qualified tables to read. dbt currently produces one
-  # 'fhir_resource' table per schema (see tests/data/dbt_fhir.json for the
-  # column shape) -- list them explicitly for now. See TODO.md re:
-  # auto-discovering these instead.
-  tables:
-    - dev_include_access.fhir_resource
+  # All FHIR resources live in one table, uniquely keyed by (id, resource_type).
+  table: fhir_resources
 
   # Column names, in case they ever diverge from the dbt convention.
   id_column: id

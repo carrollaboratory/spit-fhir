@@ -13,12 +13,10 @@ from .resource_consumer import ResourceConsumer
 
 
 class DewrangleJSON(ResourceConsumer):
-    """Buffers resources and writes them to a single JSON array file suitable
-    for Dewrangle to ingest.
+    """Buffers resources and writes them to a single JSON array file.
 
-    TODO: this only produces a local manifest file -- it does not call the
-    Dewrangle API directly. See TODO.md for the plan to replace/extend this
-    with a real API-backed consumer once the upload path is defined.
+    This intentionally only produces a local manifest file -- a separate,
+    existing script loads that file into Dewrangle.
     """
 
     def __init__(self, filename, buffersize=100):

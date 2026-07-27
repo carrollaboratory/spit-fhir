@@ -18,14 +18,14 @@ from .exceptions import ConfigError
 class DbConfig:
     """Connection and source-table details for the Postgres warehouse.
 
-    Each table in `tables` is expected to provide, at minimum, an id column,
-    a resource_type column, and a JSON/JSONB column holding the rendered
-    FHIR resource -- this is the shape dbt currently produces (see
-    tests/data/dbt_fhir.json for an example).
+    All FHIR resources live in a single table, keyed uniquely by
+    (id, resource_type). The table is expected to provide, at minimum, an id
+    column, a resource_type column, and a JSON/JSONB column holding the
+    rendered FHIR resource -- see tests/data/dbt_fhir.json for an example.
     """
 
     uri: str
-    tables: list[str]
+    table: str = "fhir_resources"
     id_column: str = "id"
     resource_type_column: str = "resource_type"
     resource_column: str = "resource"
@@ -38,15 +38,9 @@ class DbConfig:
                 "db.uri is required (or set SPIT_FHIR_DB_URI in the environment)"
             )
 
-        tables = data.get("tables")
-        if not tables:
-            raise ConfigError(
-                "db.tables must list at least one 'schema.table' to read from"
-            )
-
         return cls(
             uri=uri,
-            tables=list(tables),
+            table=data.get("table", "fhir_resources"),
             id_column=data.get("id_column", "id"),
             resource_type_column=data.get("resource_type_column", "resource_type"),
             resource_column=data.get("resource_column", "resource"),

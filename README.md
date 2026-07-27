@@ -8,18 +8,20 @@ Dewrangle.
 FHIR resources are now rendered inside dbt (previously this was done with a
 Jinja-templating engine driven by a LinkML data model -- see
 [carrollaboratory/piper](https://github.com/carrollaboratory/piper) for that
-approach, kept around as reference). dbt writes its output into Postgres as
-one table per resource group, with each row holding:
+approach, kept around as reference). dbt writes its output into a single
+Postgres table, `fhir_resources`, uniquely keyed by `(id, resource_type)`:
 
 | column          | meaning                                   |
 |-----------------|--------------------------------------------|
-| `id`            | row identifier                             |
+| `id`            | row identifier (not unique on its own)     |
 | `resource_type` | the FHIR `resourceType`, e.g. `Patient`    |
 | `resource`      | the rendered FHIR resource (JSON/JSONB)    |
 
-`spit-fhir`'s job starts there: read those tables, run each resource through
-basic FHIR validation (and, optionally, NCPI IG validation against a live
-FHIR server), and write a manifest suitable for loading into Dewrangle.
+`spit-fhir`'s job starts there: read that table (optionally filtered to
+specific ids or resource types), run each resource through basic FHIR
+validation (and, optionally, NCPI IG validation against a live FHIR server),
+and write a manifest suitable for loading into Dewrangle by a separate
+existing script.
 
 ```
 Postgres (dbt output) -> extract -> validate -> Dewrangle manifest
@@ -40,8 +42,7 @@ Copy `example/config.yaml` and point it at your warehouse:
 ```yaml
 db:
   uri: postgresql+psycopg://user:pass@localhost:5432/warehouse
-  tables:
-    - dev_include_access.fhir_resource
+  table: fhir_resources
 
 dewrangle:
   output_file: output/dewrangle.json
@@ -56,16 +57,23 @@ variable instead of being committed to the config file.
 spit-fhir example/config.yaml
 ```
 
+Narrow the extraction with `--id` and/or `--resource-type` (both accept
+multiple values and combine with AND); omit both to extract everything:
+
+```
+spit-fhir example/config.yaml --resource-type Patient Observation
+spit-fhir example/config.yaml --id co-ajdm9fyxxz
+```
+
 ## Test data
 
 `tests/data/dbt_fhir.json` is a snapshot of
 [fhir-kfi-dbt-model's dbt export](https://github.com/carrollaboratory/fhir-kfi-dbt-model/blob/main/output/dbt_fhir.json)
--- toy data, expected to grow as the dbt transforms are completed. Re-fetch
-it with:
+-- toy data, expected to grow as the dbt transforms are completed.
 
 ```
-curl -sL -o tests/data/dbt_fhir.json \
-  https://raw.githubusercontent.com/carrollaboratory/fhir-kfi-dbt-model/main/output/dbt_fhir.json
+just update-fixture   # re-fetch the fixture and run the tests against it
+just test             # just run the tests
 ```
 
 See `TODO.md` for known gaps.
