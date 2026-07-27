@@ -29,11 +29,22 @@ Postgres (dbt output) -> extract -> validate -> Dewrangle manifest
 
 ## Install
 
+This project uses [uv](https://docs.astral.sh/uv/) for dependency management
+and [just](https://just.systems/) to wrap the common commands. If you're new
+to uv: it replaces `pip`/`venv` -- `uv sync` reads `pyproject.toml` and
+`uv.lock` and creates/updates a `.venv` for you, and `uv run <cmd>` runs
+something inside that environment without you having to activate it
+yourself.
+
 ```
-pip install -e ".[dev]"
+just install    # uv sync --extra dev
 ```
 
-Requires Python 3.13+.
+Requires Python 3.13+ (uv will fetch it automatically if it's not already
+on your machine).
+
+If you'd rather not install `just`, the recipes are one-liners -- see the
+`justfile` and run the underlying `uv` commands directly.
 
 ## Configure
 
@@ -54,16 +65,20 @@ variable instead of being committed to the config file.
 ## Run
 
 ```
-spit-fhir example/config.yaml
+uv run spit-fhir example/config.yaml
 ```
 
 Narrow the extraction with `--id` and/or `--resource-type` (both accept
 multiple values and combine with AND); omit both to extract everything:
 
 ```
-spit-fhir example/config.yaml --resource-type Patient Observation
-spit-fhir example/config.yaml --id co-ajdm9fyxxz
+uv run spit-fhir example/config.yaml --resource-type Patient Observation
+uv run spit-fhir example/config.yaml --id co-ajdm9fyxxz
 ```
+
+`just start-pgsql` brings up the same local Postgres container
+(`dbt-test-pg`) used by `fhir-kfi-dbt-model`, so `example/config.yaml` can
+point at dbt's own output during local development.
 
 ## Test data
 
