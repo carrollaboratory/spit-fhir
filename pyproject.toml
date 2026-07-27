@@ -41,5 +41,13 @@ version_file = "src/spit_fhir/_version.py"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.uv.sources]
+car-utils = { git = "https://github.com/carrollaboratory/car-utils" }
+
+[dependency-groups]
+dev = [
+    "car-utils",
+]
+
 [project.scripts]
 spit-fhir = "spit_fhir.extract:run"

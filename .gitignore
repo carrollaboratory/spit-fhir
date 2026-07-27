@@ -2,6 +2,7 @@
 .direnv
 src/spit_fhir/_version.py
 output/
+.bash_history_local
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
