@@ -1,0 +1,134 @@
+{
+  "dev_include_access.fhir_resource": [
+    {
+      "id": "co-ajdm9fyxxz",
+      "resource_type": "Consent",
+      "access_policy_id": "co-ajdm9fyxxz",
+      "resource": {
+        "id": "co-ajdm9fyxxz",
+        "meta": {
+          "profile": [
+            "https://nih-ncpi.github.io/ncpi-fhir-ig-2/StructureDefinition/ncpi-research-access-policy"
+          ],
+          "lastUpdated": "2026-07-24T22:03:20Z"
+        },
+        "scope": {
+          "coding": [
+            {
+              "code": "research",
+              "system": "http://hl7.org/fhir/ValueSet/consent-scope",
+              "display": "Research"
+            }
+          ]
+        },
+        "status": "active",
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "research",
+                "system": "http://terminology.hl7.org/CodeSystem/consentcategorycodes",
+                "display": "Research Information Access"
+              }
+            ]
+          }
+        ],
+        "extension": [
+          {
+            "url": "https://nih-ncpi.github.io/ncpi-fhir-ig-2/StructureDefinition/access-policy-description",
+            "valueMarkdown": "This access policy is specifically for General Research Use"
+          },
+          {
+            "url": "https://nih-ncpi.github.io/ncpi-fhir-ig-2/StructureDefinition/research-web-link",
+            "valueUrl": "https://carrollaboratory.github.io/kfi-fhir-input/elements/website/"
+          }
+        ],
+        "provision": {
+          "type": "permit",
+          "purpose": [
+            {
+              "coding": [
+                {
+                  "code": "0000042",
+                  "system": "http://purl.obolibrary.org/obo/DUO_",
+                  "display": "This data use permission indicates that use is allowed for general research use for any research purpose.\nThis includes but is not limited to: health/medical/biomedical purposes, fundamental biology research, the study of population origins or ancestry, statistical methods and algorithms development, and social-sciences research."
+                },
+                {
+                  "code": "0000045",
+                  "system": "http://purl.obolibrary.org/obo/DUO_",
+                  "display": "This data use modifier indicates that use of the data is limited to not-for-profit organizations."
+                }
+              ]
+            }
+          ]
+        },
+        "resourceType": "Consent"
+      }
+    },
+    {
+      "id": "co-t869rg8xx6",
+      "resource_type": "Consent",
+      "access_policy_id": "co-t869rg8xx6",
+      "resource": {
+        "id": "co-t869rg8xx6",
+        "meta": {
+          "profile": [
+            "https://nih-ncpi.github.io/ncpi-fhir-ig-2/StructureDefinition/ncpi-research-access-policy"
+          ],
+          "lastUpdated": "2026-07-24T22:03:20Z"
+        },
+        "scope": {
+          "coding": [
+            {
+              "code": "research",
+              "system": "http://hl7.org/fhir/ValueSet/consent-scope",
+              "display": "Research"
+            }
+          ]
+        },
+        "status": "active",
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "research",
+                "system": "http://terminology.hl7.org/CodeSystem/consentcategorycodes",
+                "display": "Research Information Access"
+              }
+            ]
+          }
+        ],
+        "extension": [
+          {
+            "url": "https://nih-ncpi.github.io/ncpi-fhir-ig-2/StructureDefinition/access-policy-description",
+            "valueMarkdown": "This access policy is also specifically for General Research Use"
+          },
+          {
+            "url": "https://nih-ncpi.github.io/ncpi-fhir-ig-2/StructureDefinition/research-web-link",
+            "valueUrl": "https://carrollaboratory.github.io/kfi-fhir-input/elements/website/2"
+          }
+        ],
+        "provision": {
+          "type": "permit",
+          "purpose": [
+            {
+              "coding": [
+                {
+                  "code": "0000042",
+                  "system": "http://purl.obolibrary.org/obo/DUO_",
+                  "display": "This data use permission indicates that use is allowed for general research use for any research purpose.\nThis includes but is not limited to: health/medical/biomedical purposes, fundamental biology research, the study of population origins or ancestry, statistical methods and algorithms development, and social-sciences research."
+                },
+                {
+                  "code": "0000045",
+                  "system": "http://purl.obolibrary.org/obo/DUO_",
+                  "display": "This data use modifier indicates that use of the data is limited to not-for-profit organizations."
+                }
+              ]
+            }
+          ]
+        },
+        "resourceType": "Consent"
+      }
+    }
+  ]
+}

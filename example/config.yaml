@@ -1,0 +1,21 @@
+# Example spit-fhir configuration.
+db:
+  # Can also be provided via the SPIT_FHIR_DB_URI environment variable
+  # instead of committing a connection string here.
+  uri: postgresql+psycopg://user:pass@localhost:5432/warehouse
+
+  # Schema-qualified tables to read. dbt currently produces one
+  # 'fhir_resource' table per schema (see tests/data/dbt_fhir.json for the
+  # column shape) -- list them explicitly for now. See TODO.md re:
+  # auto-discovering these instead.
+  tables:
+    - dev_include_access.fhir_resource
+
+  # Column names, in case they ever diverge from the dbt convention.
+  id_column: id
+  resource_type_column: resource_type
+  resource_column: resource
+
+dewrangle:
+  output_file: output/dewrangle.json
+  buffer_size: 1000

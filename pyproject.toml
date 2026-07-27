@@ -1,0 +1,45 @@
+[build-system]
+requires = [
+    "setuptools>=61.0",
+    "setuptools_scm"
+]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "spit-fhir"
+authors = [
+  { name = "Eric Torstenson", email = "eric.s.torstenson@vumc.org" },
+]
+description = "Extract FHIR resources from a Postgres warehouse, validate them, and load to Dewrangle."
+readme = "README.md"
+requires-python = ">=3.13"
+
+dynamic = ["version"]
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+
+dependencies = [
+  "PyYAML",
+  "sqlalchemy",
+  "psycopg[binary]",
+  "fhir.resources",
+  "ncpi_fhir_client @ git+https://github.com/ncpi-fhir/ncpi-fhir-client"
+]
+
+[project.optional-dependencies]
+dev = [
+    "rich",
+    "pytest",
+]
+
+[tool.setuptools_scm]
+version_file = "src/spit_fhir/_version.py"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+spit-fhir = "spit_fhir.extract:run"
