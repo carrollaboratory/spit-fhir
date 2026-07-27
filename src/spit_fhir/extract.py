@@ -19,9 +19,9 @@ import logging
 from importlib.metadata import version
 from typing import Iterable, Iterator
 
+from car_utils import setup_logging
 from sqlalchemy import create_engine, text
 
-from . import setup_logging
 from .config import AppConfig, DbConfig, load_config
 from .exceptions import FhirValidationError, PayloadDecodeError
 from .fhir_consumers import (
