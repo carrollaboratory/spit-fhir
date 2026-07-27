@@ -80,6 +80,28 @@ uv run spit-fhir example/config.yaml --id co-ajdm9fyxxz
 (`dbt-test-pg`) used by `fhir-kfi-dbt-model`, so `example/config.yaml` can
 point at dbt's own output during local development.
 
+### IG validation locally
+
+`ValidateAgainstIG` needs a FHIR server with the NCPI IG loaded. That's
+[carrollaboratory/hapi-helper](https://github.com/carrollaboratory/hapi-helper)
+(docker-compose + an IG loader script), assumed to be checked out as a
+sibling directory (`../hapi-helper`) -- override with `HAPI_HELPER_DIR` if
+yours lives elsewhere.
+
+```
+just hapi-up      # bring up HAPI + its own Postgres, wait until ready
+just load-ig      # load the published NCPI IG package
+just hapi-ready   # both of the above in one step
+
+just load-ig https://deploy-preview-162--ncpi-fhir-ig-v2.netlify.app/package.tgz
+                  # load a different package instead, e.g. an unreleased
+                  # netlify preview build
+
+just hapi-logs    # tail the HAPI server's logs
+just hapi-down    # stop and remove the containers (keeps IG/data volume)
+just hapi-reset   # stop and remove everything, including the data volume
+```
+
 ## Test data
 
 `tests/data/dbt_fhir.json` is a snapshot of

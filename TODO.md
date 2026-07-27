@@ -2,12 +2,12 @@
 
 ## Needs a decision
 
-- **IG validation server.** A local HAPI FHIR server with the NCPI IG loaded
-  will be stood up (on Eric's laptop for now) as the target for
-  `ValidateAgainstIG`. Not yet decided whether/how that can run in CI --
-  needs to bring up the server + load the IG (see the `justfile` stub) once
-  that's worked out. Until then, `--validate-ig`-style CLI wiring for it is
-  on hold.
+- **IG validation in CI.** `just hapi-up` / `just load-ig` bring up a local
+  HAPI FHIR server with the NCPI IG loaded (see carrollaboratory/hapi-helper),
+  confirmed working. Not yet decided whether/how that runs in CI -- a JPA
+  server cold-boots in ~50-80s even with the IG package cached locally, so
+  running it on every PR has a real cost. `--validate-ig`-style CLI wiring in
+  `extract.py` is still on hold pending that decision.
 - **Credentials in production.** DB connection currently comes from `db.uri`
   in the config or `SPIT_FHIR_DB_URI`. How this gets populated once the job
   runs live is still unknown -- likely baked into the runtime environment,
