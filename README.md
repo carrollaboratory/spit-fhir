@@ -36,11 +36,14 @@ to uv: it replaces `pip`/`venv` -- `uv sync` reads `pyproject.toml` and
 something inside that environment without you having to activate it
 yourself.
 
+Requires [carrollaboratory/car-utils](https://github.com/carrollaboratory/car-utils)
+(shared logging setup, LinkML model loading).
+
 ```
 just install    # uv sync --extra dev
 ```
 
-Requires Python 3.13+ (uv will fetch it automatically if it's not already
+Requires Python 3.10+ (uv will fetch it automatically if it's not already
 on your machine).
 
 If you'd rather not install `just`, the recipes are one-liners -- see the
