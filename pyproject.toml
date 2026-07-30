@@ -26,7 +26,8 @@ dependencies = [
   "sqlalchemy",
   "psycopg[binary]",
   "fhir.resources",
-  "ncpi_fhir_client @ git+https://github.com/ncpi-fhir/ncpi-fhir-client"
+  "ncpi_fhir_client @ git+https://github.com/ncpi-fhir/ncpi-fhir-client",
+  "car-utils",
 ]
 
 [project.optional-dependencies]
@@ -40,6 +41,9 @@ version_file = "src/spit_fhir/_version.py"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.uv.sources]
+car-utils = { git = "https://github.com/carrollaboratory/car-utils" }
 
 [project.scripts]
 spit-fhir = "spit_fhir.extract:run"
