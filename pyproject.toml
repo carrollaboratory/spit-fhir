@@ -13,7 +13,7 @@ authors = [
 ]
 description = "Extract FHIR resources from a Postgres warehouse, validate them, and load to Dewrangle."
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 
 dynamic = ["version"]
 
@@ -44,6 +44,11 @@ where = ["src"]
 
 [tool.uv.sources]
 car-utils = { git = "https://github.com/carrollaboratory/car-utils" }
+
+[dependency-groups]
+dev = [
+    "car-utils",
+]
 
 [project.scripts]
 spit-fhir = "spit_fhir.extract:run"

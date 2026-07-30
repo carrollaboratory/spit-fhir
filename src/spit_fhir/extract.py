@@ -19,9 +19,9 @@ import logging
 from importlib.metadata import version
 from typing import Iterable, Iterator
 
+from car_utils import setup_logging
 from sqlalchemy import create_engine, text
 
-from . import setup_logging
 from .config import AppConfig, DbConfig, load_config
 from .exceptions import FhirValidationError, PayloadDecodeError
 from .fhir_consumers import (
@@ -35,6 +35,7 @@ from .fhir_consumers import (
 def stream_table(
     engine,
     db_config: DbConfig,
+    schema: str,
     ids: list[str] | None = None,
     resource_types: list[str] | None = None,
     chunksize: int = 1000,
@@ -57,7 +58,7 @@ def stream_table(
 
     query = text(
         f"SELECT {db_config.id_column}, {db_config.resource_type_column}, "
-        f"{db_config.resource_column} FROM {db_config.table}{where}"
+        f"{db_config.resource_column} FROM {schema}.{db_config.table}{where}"
     )
     with engine.connect() as conn:
         result = conn.execution_options(stream_results=True).execute(query, params)
@@ -74,12 +75,15 @@ def coerce_payload(table: str, row_id, resource) -> dict:
     try:
         return json.loads(resource)
     except (TypeError, json.JSONDecodeError) as e:
-        raise PayloadDecodeError(table=table, row_id=row_id, raw=resource, cause=e) from e
+        raise PayloadDecodeError(
+            table=table, row_id=row_id, raw=resource, cause=e
+        ) from e
 
 
 def run_extract(
     config: AppConfig,
     consumers: Iterable[ResourceConsumer],
+    schema: str,
     ids: list[str] | None = None,
     resource_types: list[str] | None = None,
 ) -> ResourceSummary:
@@ -97,13 +101,13 @@ def run_extract(
 
     try:
         logging.info(
-            f"Extracting '{table}'"
+            f"Extracting '{schema}.{table}'"
             + (f" ids={ids}" if ids else "")
             + (f" resource_types={resource_types}" if resource_types else "")
         )
         row_count = 0
         for row_id, resource_type, resource in stream_table(
-            engine, config.db, ids=ids, resource_types=resource_types
+            engine, config.db, schema=schema, ids=ids, resource_types=resource_types
         ):
             payload = coerce_payload(table, row_id, resource)
             raw = json.dumps(payload)
@@ -143,6 +147,15 @@ def run():
         help="Log level",
     )
     parser.add_argument(
+        "--schema", default="dev_include_access", help="Schema data can be found inside"
+    )
+    parser.add_argument(
+        "-d",
+        "--dewrangle-output",
+        default=None,
+        help="Path to the dewrangle output .json file",
+    )
+    parser.add_argument(
         "--version", action="version", version=f"%(prog)s {version('spit-fhir')}"
     )
     args = parser.parse_args()
@@ -151,14 +164,18 @@ def run():
     config = load_config(args.config)
 
     dewrangle = DewrangleJSON(
-        filename=config.dewrangle.output_file,
+        filename=args.dewrangle_output or config.dewrangle.output_file,
         buffersize=config.dewrangle.buffer_size,
     )
     consumers = [ValidateResourceBasic(), dewrangle]
 
     try:
         summary = run_extract(
-            config, consumers, ids=args.ids, resource_types=args.resource_types
+            config,
+            consumers,
+            ids=args.ids,
+            resource_types=args.resource_types,
+            schema=args.schema,
         )
     except (FhirValidationError, PayloadDecodeError):
         logging.exception("Extract run aborted")

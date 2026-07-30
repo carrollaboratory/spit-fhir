@@ -10,7 +10,7 @@
           "profile": [
             "https://nih-ncpi.github.io/ncpi-fhir-ig-2/StructureDefinition/ncpi-research-access-policy"
           ],
-          "lastUpdated": "2026-07-24T22:03:20Z"
+          "lastUpdated": "2026-07-27T23:10:17Z"
         },
         "scope": {
           "coding": [
@@ -47,18 +47,14 @@
           "type": "permit",
           "purpose": [
             {
-              "coding": [
-                {
-                  "code": "0000042",
-                  "system": "http://purl.obolibrary.org/obo/DUO_",
-                  "display": "This data use permission indicates that use is allowed for general research use for any research purpose.\nThis includes but is not limited to: health/medical/biomedical purposes, fundamental biology research, the study of population origins or ancestry, statistical methods and algorithms development, and social-sciences research."
-                },
-                {
-                  "code": "0000045",
-                  "system": "http://purl.obolibrary.org/obo/DUO_",
-                  "display": "This data use modifier indicates that use of the data is limited to not-for-profit organizations."
-                }
-              ]
+              "code": "0000042",
+              "system": "http://purl.obolibrary.org/obo/DUO_",
+              "display": "This data use permission indicates that use is allowed for general research use for any research purpose.\nThis includes but is not limited to: health/medical/biomedical purposes, fundamental biology research, the study of population origins or ancestry, statistical methods and algorithms development, and social-sciences research."
+            },
+            {
+              "code": "0000045",
+              "system": "http://purl.obolibrary.org/obo/DUO_",
+              "display": "This data use modifier indicates that use of the data is limited to not-for-profit organizations."
             }
           ]
         },
@@ -75,7 +71,7 @@
           "profile": [
             "https://nih-ncpi.github.io/ncpi-fhir-ig-2/StructureDefinition/ncpi-research-access-policy"
           ],
-          "lastUpdated": "2026-07-24T22:03:20Z"
+          "lastUpdated": "2026-07-27T23:10:17Z"
         },
         "scope": {
           "coding": [
@@ -112,18 +108,14 @@
           "type": "permit",
           "purpose": [
             {
-              "coding": [
-                {
-                  "code": "0000042",
-                  "system": "http://purl.obolibrary.org/obo/DUO_",
-                  "display": "This data use permission indicates that use is allowed for general research use for any research purpose.\nThis includes but is not limited to: health/medical/biomedical purposes, fundamental biology research, the study of population origins or ancestry, statistical methods and algorithms development, and social-sciences research."
-                },
-                {
-                  "code": "0000045",
-                  "system": "http://purl.obolibrary.org/obo/DUO_",
-                  "display": "This data use modifier indicates that use of the data is limited to not-for-profit organizations."
-                }
-              ]
+              "code": "0000042",
+              "system": "http://purl.obolibrary.org/obo/DUO_",
+              "display": "This data use permission indicates that use is allowed for general research use for any research purpose.\nThis includes but is not limited to: health/medical/biomedical purposes, fundamental biology research, the study of population origins or ancestry, statistical methods and algorithms development, and social-sciences research."
+            },
+            {
+              "code": "0000045",
+              "system": "http://purl.obolibrary.org/obo/DUO_",
+              "display": "This data use modifier indicates that use of the data is limited to not-for-profit organizations."
             }
           ]
         },
